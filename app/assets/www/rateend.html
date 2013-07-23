@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>PickEvent - Review App</title>
+
+    <!-- General Properties -->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+    <script type="text/javascript" src="css/cordova.js"></script>
+
+  </head>
+  
+  
+  
+  <body>
+	  <script type="text/javascript">
+		var logged_user = localStorage.getItem('logged_user') || '<empty>';
+		if(logged_user == '<empty>'){
+			window.location = 'index.html';
+		}
+	</script>
+	
+  <header class="bar-title">
+  	<a class="button" href="home.html">
+		Back
+	  </a>
+    <h1 class="title">PickEvent - Review App</h1>
+  </header>
+
+  <div class="content">
+	  <div class="content-padded">
+		<h2>Congratulations!!</h2>
+		<p id="text_user">You have successfuly rated the user.</p>
+		<br/><br/>
+		<a class="button" href="find.html">Search More</a>
+		<a class="button" href="speakerconfig.html">Add Profile</a>
+	 </div>
+  </div>
+  </body>
+</html>

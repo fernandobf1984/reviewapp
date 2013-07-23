@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>PickEvent - Review App</title>
+
+    <!-- Sets initial viewport load and disables zooming  -->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <script type="text/javascript" src="js/cordova.js"></script>
+	<script type="text/javascript" src="js/app.js"></script>
+  </head>
+  
+  
+  
+  <body>
+  
+  <script type="text/javascript">
+	var user_id = getUrlVars()["id"];
+	if(user_id != undefined){
+		getInfoUser(user_id);
+	}else{
+		user_id = "";
+	}
+	
+	
+	function getInfoUser(user_id){
+		connection = crearXMLHttpRequest();
+  		connection.onreadystatechange = getSpeakerData;
+  		connection.open('GET',url_api_base+'speakers/'+user_id, true);
+  		connection.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+        connection.send();
+    }
+	  
+  function addSkill(){
+  	var total = document.getElementById("total").value;
+  	if(total < 10){
+  		var s_skill = document.getElementById("addskill").value;
+	  	if(s_skill != "Expertise" && s_skill != "" ){
+	  		total = parseInt(total)+1;
+	  		document.getElementById("form_helper").innerHTML = document.getElementById("form_helper").innerHTML +
+	  					'<div id="skill_div_'+total+'"><li><input class="skill" type="hidden" id="skill_'+total+'" value="'+s_skill+'">' + 
+	  					s_skill+'<a class="button-negative" href="javascript:delSkill(\''+total+'\');">X</a></li></div>';
+	  		document.getElementById("addskill").value = '';
+	  		document.getElementById("total").value = total;
+	  	}else{
+	  		alert("You must insert the skill before add...");
+	  	}
+	}else{
+		alert("You cannot add more skills...");
+	}
+  }
+  
+  
+  function delSkill(id){
+  	var total = document.getElementById("total").value;
+  	total = parseInt(total)-1;
+  	document.getElementById("total").value = total;
+  	document.getElementById('skill_div_'+id).parentNode.removeChild(document.getElementById('skill_div_'+id));
+  }
+  
+  function updateInfo()
+	{   
+		var els = document.getElementsByClassName("skill");
+		var s_skills = "";
+		var i = 0;
+		Array.prototype.forEach.call(els, function(el){
+			var s_coma = "";
+			if(i > 0){
+				s_coma = ", ";
+			}
+			s_skills = s_skills + s_coma + '"' + i + '": "' + el.value + '"';
+			i = i + 1;
+		});
+		s_skills = "{" + s_skills + "}"
+		
+		var name = document.getElementById('name').value;
+		var surname = document.getElementById('surname').value;
+		//var company = document.getElementById('company').value;
+		
+		var user_id = getUrlVars()["id"];
+		if(user_id != undefined){
+			getInfoUser(user_id);
+		}else{
+			user_id = 0;
+		}
+		
+		
+		if(name == "" || surname == ""){
+			alert('Speaker must have a name and surname...');
+			return;
+		}
+		var total = document.getElementById("total").value;
+		if(parseInt(total) < 1){
+			alert('Speaker must have one skill at least...');
+			return;
+		}
+		
+        connection = crearXMLHttpRequest();
+  		connection.onreadystatechange = responseAjax;
+  		connection.open('POST',url_api_base+'addspeaker', true);
+  		connection.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+        connection.send(JSON.stringify({"name": name, "surname": surname, "skills": s_skills}));
+	}
+	
+	function responseAjax(){
+	     if(connection.readyState == 4){
+	        if(connection.status == 200){
+	            result = connection.responseText;
+	            
+	            if(result == "ok"){
+					window.location = "profile.html?id="+user_id;
+				}else{
+					window.location = "profile.html?id="+result;
+				}
+	        }else{
+	            alert("An error has occurred: "+connection.statusText);
+	        }
+	     }
+	  }
+  </script>
+  
+  <header class="bar-title">
+  	<a class="button" href="home.html">
+		Back
+	  </a>
+    <h1 class="title">PickEvent - Review App</h1>
+  </header>
+  
+   <div class="content">
+	  <div class="content-padded">
+		<p class="welcome"><h2>Speaker Config</h2></p>
+	  </div>
+	  
+	  <div id="formulario" class="content-padded">
+	  	<input type="hidden" id="total" value="0">
+		  <div style="padding:10px;margin:10px;">
+		  <form>
+		  	<input type="text" placeholder="Name" id="name">
+		  	<input type="text" placeholder="Surname" id="surname">
+		  	<!--<input type="text" placeholder="Company or University" id="company">-->
+		  	<p style="text-align:left;margin-top:5px;"><strong>Add at least 1 skill (max 10):</strong></p>
+		  	<input type="text" placeholder="Expertise" id="addskill">
+		  	<p style="text-align:right;"><a class="button" href="javascript:addSkill();">Add skill</a></p>
+		  	<br/><br/>
+		  	<div >
+		  	<ul class="list" id="form_helper">
+			</ul>
+			</div>
+			<br/><br/>
+			<a class="button button-block" href="javascript:updateInfo();">Save</a>
+			</form>
+			</div>
+		</div>
+  </div>
+  
+  
+
+  </body>
+</html>

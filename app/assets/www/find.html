@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>PickEvent - Review App</title>
+    
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <script type="text/javascript" src="js/cordova.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
+
+  </head>
+  
+  
+  
+  <body>
+	<script type="text/javascript">
+	
+	getAllSpeakers();
+	
+	function getSpeakers(){
+		var query = document.getElementById('search').value;
+		query = query.trim();
+		
+		if(query == ""){
+			alert("You must write something to search...");
+		}else{
+			connection = crearXMLHttpRequest();
+			connection.onreadystatechange = getSpeakersData;
+			connection.open('GET',url_api_base+'speakers/search/'+query, true);
+			connection.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+			connection.send();
+		}
+    }
+    
+    
+    function getAllSpeakers(){
+		connection = crearXMLHttpRequest();
+		connection.onreadystatechange = getSpeakersData;
+		connection.open('GET',url_api_base+'speakers', true);
+		connection.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		connection.send();
+    }
+    
+    
+    
+	
+	function getSpeakersData(){
+	     if(connection.readyState == 4){
+	        if(connection.status == 200){
+	            result = connection.responseText;
+	            //alert(result);
+	            var obj = JSON.parse(result);
+	            
+	            var total = obj["speaker"].length;
+	            document.getElementById("speakers_list").innerHTML = "";
+	            if(total <= 0){
+					var query = document.getElementById('search').value;
+					query = query.trim();
+					document.getElementById("speakers_list").innerHTML = "<div style='text-align:center;'><p style='width:50%;text-align:center;'>"+query+" can't be found but you can add his profile in less than 20 seconds and rate him directly.</p><p><a class='button button-block' href='speakeradd.html'>Add Profile</a></p></div>";
+				}
+	            
+	            for(var i = 0; i < total; i++){
+					document.getElementById("speakers_list").innerHTML = document.getElementById("speakers_list").innerHTML +
+									'<li><a href="profile.html?id='+obj["speaker"][i]["user_id"]+'"><strong>'+obj["speaker"][i]["name"]+' '+obj["speaker"][i]["surname"]+'</strong><span class="chevron"></span></a></li>';
+				}
+	        }else{
+	            alert("An error has occurred: "+connection.statusText);
+	        }
+	     }
+	  }
+	
+	String.prototype.trim = function() {
+		return this.replace(/^\s+|\s+$/g, "");
+	};
+  
+  </script>
+
+  <header class="bar-title">
+	  <a class="button" href="index.html">
+		Back
+	  </a>
+    <h1 class="title">PickEvent - Review App</h1>
+  </header>
+
+  <div class="content">
+	  <div class="content-padded">
+		<p class="welcome"><h2>Search Speaker</h2></p>
+	  </div>
+	  
+	  <div id="form_1" class="content-padded">
+		  <div style="padding:10px;margin:10px;">
+			<form action="javascript:getSpeakers();">
+				<input type="search" placeholder="Search..." id="search">
+				<a class="button button-block" href="javascript:getSpeakers();">Search</a>
+			</form>
+		  </div>
+		</div>
+		
+	<ul class="list inset" id="speakers_list">
+
+    </ul>
+
+  </div>
+  
+  
+
+  </body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>PickEvent - Review App</title>
+
+    <!-- Sets initial viewport load and disables zooming  -->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+    <script type="text/javascript" src="js/cordova.js"></script>
+	<script type="text/javascript" src="js/app.js"></script>
+	
+	<link rel="stylesheet" href="css/stars.css">
+
+  </head>
+  
+  
+  
+  <body>
+  
+  <script type="text/javascript">
+	  
+	var logged_user = localStorage.getItem('logged_user') || '<empty>';
+	if(logged_user == '<empty>'){
+		window.location = 'index.html';
+	}
+	var user_id = getUrlVars()["id"];
+	if(user_id == undefined){
+			user_id = logged_user;
+	}
+	
+	getInfoUser(user_id);
+	
+	
+	function rateSpeaker(){
+		var expertise = document.getElementById('expertise_value').value;
+		var engagement = document.getElementById('engagement_value').value;
+		var clarity = document.getElementById('clarity_value').value;
+		
+		connection = crearXMLHttpRequest();
+  		connection.onreadystatechange = rateSpeakerResult;
+  		connection.open('POST',url_api_base+'speakers/vote', true);
+  		connection.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+        connection.send(JSON.stringify({"user_id":user_id,"user_logged":logged_user,"expertise":expertise,"engagement":engagement,"clarity":clarity}));
+	}
+	
+	function rateSpeakerResult(){
+	     if(connection.readyState == 4){
+	        if(connection.status == 200){
+	            result = connection.responseText;
+	            //alert(result);return;
+	            
+	            if(result == "ok"){
+					window.location = "rate2.html?id="+user_id;
+				}else{
+					alert("You did rated this user on the past.");
+				}
+	        }else{
+	            alert("An error has occurred: "+connection.statusText);
+	        }
+	     }
+	  }
+	
+	function setValue(type,value){
+		document.getElementById(type+'_value').value = value;
+	}
+	
+	
+	function getInfoUser(user_id){
+		connection = crearXMLHttpRequest();
+  		connection.onreadystatechange = getSpeakerData;
+  		connection.open('GET',url_api_base+'speakers/'+user_id, true);
+  		connection.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+        connection.send();
+    }
+    
+    
+    
+	
+	function getSpeakerData(){
+	     if(connection.readyState == 4){
+	        if(connection.status == 200){
+	            result = connection.responseText;
+	            var obj = JSON.parse(result);
+	            
+	            document.getElementById('name').innerHTML = obj["name"]+' '+obj["surname"];
+	            document.getElementById('company').innerHTML = 'Company: <strong>'+obj["company"]+'</strong>';
+	            
+	            for(var i = 1; i <= 5; i++){
+					if(obj["skills"][i] != undefined){
+						document.getElementById("skills").innerHTML = document.getElementById("skills").innerHTML +
+										'<li>'+obj["skills"][i]+'</li>';
+					}
+				}
+	        }else{
+	            alert("An error has occurred: "+connection.statusText);
+	        }
+	     }
+	  }
+	  
+	  
+	  
+
+
+function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+        vars[key] = value;
+    });
+    return vars;
+}
+  </script>
+  <header class="bar-title">
+  	<a class="button" href="home.html">
+		Back
+	  </a>
+    <h1 class="title">PickEvent - Review App</h1>
+  </header>
+   <div class="content">
+	  
+	  <div id="profile" class="content-padded">
+		  <div style="padding:10px;margin:10px;">
+		  	<h2><div id="name"></div></h2>
+		  	<div id="company"></div>
+		  	<strong>Skills:</strong>
+		  	<ul class="list" id="skills">
+			</ul>
+		  	<br/><br/>
+		  	<ul class="form">
+				<strong>Expertise:</strong>
+				<li class="expertise">
+					<input type="radio" id="expertise" name="expertise" value="0" checked /><span class="hide"></span>
+					<input type="radio" id="expertise" name="expertise" value="1" onclick="javascript:setValue('expertise',1);"/><span></span>
+					<input type="radio" id="expertise" name="expertise" value="2" onclick="javascript:setValue('expertise',2);"/><span></span>
+					<input type="radio" id="expertise" name="expertise" value="3" onclick="javascript:setValue('expertise',3);"/><span></span>
+					<input type="radio" id="expertise" name="expertise" value="4" onclick="javascript:setValue('expertise',4);"/><span></span>
+					<input type="radio" id="expertise" name="expertise" value="5" onclick="javascript:setValue('expertise',5);"/><span></span>
+				</li>
+				<br/>
+				<strong>Engagement:</strong>
+				<li class="engagement">
+					<input type="radio" id="engagement" name="engagement" value="0" checked /><span class="hide"></span>
+					<input type="radio" id="engagement" name="engagement" value="1" onclick="javascript:setValue('engagement',1);"/><span></span>
+					<input type="radio" id="engagement" name="engagement" value="2" onclick="javascript:setValue('engagement',2);"/><span></span>
+					<input type="radio" id="engagement" name="engagement" value="3" onclick="javascript:setValue('engagement',3);"/><span></span>
+					<input type="radio" id="engagement" name="engagement" value="4" onclick="javascript:setValue('engagement',4);"/><span></span>
+					<input type="radio" id="engagement" name="engagement" value="5" onclick="javascript:setValue('engagement',5);"/><span></span>
+				</li>
+				<br/>
+				<strong>Clarity:</strong>
+				<li class="clarity">
+					<input type="radio" id="clarity" name="clarity" value="0" checked /><span class="hide"></span>
+					<input type="radio" id="clarity" name="clarity" value="1" onclick="javascript:setValue('clarity',1);"/><span></span>
+					<input type="radio" id="clarity" name="clarity" value="2" onclick="javascript:setValue('clarity',2);"/><span></span>
+					<input type="radio" id="clarity" name="clarity" value="3" onclick="javascript:setValue('clarity',3);"/><span></span>
+					<input type="radio" id="clarity" name="clarity" value="4" onclick="javascript:setValue('clarity',4);"/><span></span>
+					<input type="radio" id="clarity" name="clarity" value="5" onclick="javascript:setValue('clarity',5);"/><span></span>
+				</li>
+			</ul>
+			<input type="hidden" id="expertise_value" value="0" />
+			<input type="hidden" id="engagement_value" value="0" />
+			<input type="hidden" id="clarity_value" value="0" />
+			
+			<br/><br/>
+			<p style="text-align:center;">
+				<a id="save_button" class="button" href="javascript:rateSpeaker();">Save</a>
+			</p>
+			</div>
+		</div>
+  </div>
+  
+  
+
+  </body>
+</html>

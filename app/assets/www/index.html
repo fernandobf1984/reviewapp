@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>PickEvent - Review App</title>
+
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+	<script type="text/javascript" src="js/cordova.js"></script>
+  </head>
+  
+  
+  
+  <body>
+	<script type="text/javascript">
+		var logged_user = localStorage.getItem('logged_user') || '<empty>';
+		if(logged_user != '<empty>'){
+			window.location = 'home.html'
+		}
+	</script>
+
+  <header class="bar-title">
+    <h1 class="title">PickEvent - Review App</h1>
+  </header>
+
+  <div class="content">
+	  <div id="form_1" class="content-padded">
+		  <div style="padding:10px;margin:10px;text-align:center;">
+			  <br/>
+			  <a class="button button-block" href="linkedin.html">Sign in with Linkedin</a>
+			  <br/><br/>
+			  <a class="button button-block" href="signin.html">Sign In</a>
+			  <br/><br/>
+			  <center><a class="" href="signup.html">Create Account</a></center> 
+			  <br/>
+			  
+			</div>
+		</div>
+  </div>
+
+  </body>
+</html>

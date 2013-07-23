@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>PickEvent - Review App</title>
+
+    <!-- Sets initial viewport load and disables zooming  -->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <script type="text/javascript" src="js/cordova.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/md5.js"></script>
+
+  </head>
+  
+  
+  
+  <body>
+  
+  <script type="text/javascript">
+	var logged_user = localStorage.getItem('logged_user') || '<empty>';
+	if(logged_user != '<empty>'){
+		window.location = 'home.html'
+	}
+	
+	getCountries();
+	
+	
+	
+	function signup()
+	{
+	
+		var name = document.getElementById("name").value;
+		var surname = document.getElementById("surname").value;
+		var company = document.getElementById("company").value;
+		var email = document.getElementById("email").value;
+		var pass1 = document.getElementById("password1").value;
+		var pass2 = document.getElementById("password2").value;
+		
+		var country = document.getElementById("select_countries").value;
+		var region = document.getElementById("select_regions").value;
+		var city = document.getElementById("select_cities").value;
+		
+		if(name == "" || company == "" || surname == ""){
+			alert("Error: Name, Surname and Company are mandatory fields.");
+        	return;
+		}
+		
+		var expr = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+   		if (!expr.test(email)){
+        	alert("Error: The email (" + email + ") is incorrect.");
+        	return;
+        }
+        
+        if(pass1 == pass2 && pass1 != ""){
+        	var pass = hex_md5(pass1);
+        }else{
+        	alert('Error: Password must be the same.');
+        	return;
+        }
+        
+        connection = crearXMLHttpRequest();
+  		connection.onreadystatechange = responseAjax;
+  		connection.open('POST',url_api_base+'signup', true);
+  		connection.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+        connection.send(JSON.stringify({"name":name,"surname":surname,"email":email,"company":company,
+										"password":pass,"country":country,"region":region,"city":city}));
+	}
+	
+	function responseAjax(){
+	     if(connection.readyState == 4){
+	        if(connection.status == 200){
+				
+	            result = connection.responseText;
+	            
+	            if(result == "mail"){
+					alert('This email are using on our database.');
+					return;
+				}
+				if(result == "0"){
+					alert('Something wrong...');
+					return;
+				}
+				
+	            window.location = "signup2.html?id="+result
+	            localStorage.setItem("logged_user", result);
+	        }else{
+	            alert("An error has occurred: " + connection.statusText);
+	        }
+	     }
+	  }
+	
+	</script>
+	
+	
+	
+  <header class="bar-title">
+	  <a class="button" href="index.html">
+		Back
+	  </a>
+    <h1 class="title">PickEvent - Review App</h1>
+  </header>
+
+  <div class="content">
+	  <div class="content-padded">
+		<p class="welcome"><h2>Sign Up</h2></p>
+	  </div>
+	  
+	  <div id="formulario" class="content-padded">
+		  <div style="padding:10px;margin:10px;">
+		  <form>
+		  <div id="mensaje"></div>
+			  <input type="text" placeholder="Name" id="name">
+			  <br/>
+			  <input type="text" placeholder="Surname" id="surname">
+			  <br/>
+			  <input type="text" placeholder="Company or University" id="company">
+			  <br/>
+			  <input type="text" placeholder="E-Mail Address" id="email">
+			  <br/>
+			  <select id="select_countries" onChange="countrySelected();">
+				  <option id="-" selected>-</option>
+			  </select>
+			  <br/>
+			  <select id="select_regions" onChange="regionSelected();">
+				  <option id="-" selected>-</option>
+			  </select>
+			  <br/>
+			  <select id="select_cities">
+				  <option id="-" selected>-</option>
+			  </select>
+			  <br/>
+			  <input type="password" placeholder="Password" id="password1">
+			  <br/>
+			  <input type="password" placeholder="Repeat Password" id="password2">
+			  <br/>
+			  <a class="button button-block" href="javascript:signup();">Sign Up</a>
+			  <br/>
+			  <a class="button button-block" href="index.html">Back</a>
+			</form>
+			</div>
+		</div>
+  </div>
+
+  </body>
+</html>

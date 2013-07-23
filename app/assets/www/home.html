@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>PickEvent - Review App</title>
+
+    <!-- General Properties -->
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+    
+    <script type="text/javascript" src="js/cordova.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
+
+  </head>
+  
+  
+  
+  <body>
+	  <script type="text/javascript">
+		var logged_user = localStorage.getItem('logged_user') || '<empty>';
+		if(logged_user == '<empty>'){
+			window.location = 'index.html';
+		}
+		
+		function profileLinks(){
+			var speaker = localStorage.getItem('speaker') || '<empty>';
+			//alert(speaker);//return;
+			if(speaker != 'yes'){
+				document.getElementById('profile_edit').href = "userconfig.html?id="+logged_user;
+			}else{
+				document.getElementById('profile_edit').href = "speakerconfig.html?id="+logged_user;
+			}
+			
+			document.getElementById('profile_link').href = "profile.html?id="+logged_user;
+		}
+	</script>
+
+  <header class="bar-title">
+    <h1 class="title">PickEvent - Review App</h1>
+  </header>
+
+  <div class="content">
+	  <div style="padding:10px;margin:10px;text-align:center;">
+		<p><h2>Get Heard!</h2> Your opinion counts.</p>
+	  </div>
+	  	<br/>
+        <strong>Start rating Experts, Professors and Speakers</strong>
+        <br/><br/><br/>
+		<a class="button button-block" href="find.html">Find and Rate</a>
+		<br/><br/>
+		<a class="button button-block" href="speakeradd.html">Add Profile</a>
+		<br/><br/>
+		<a id="profile_edit" class="button button-block" href="speakerconfig.html">Modify Your Profile</a>
+		<br/><br/>
+		<a id="profile_link" class="button button-block" href="profile.html">View Your Profile</a>
+		<br/><br/>
+		<a class="button button-block" href="logout.html">Log Out</a>
+		
+		
+  </div>
+<script type="text/javascript">profileLinks();</script>
+  </body>
+</html>

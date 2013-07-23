@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>PickEvent - Review App</title>
+    
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+    <script type="text/javascript" src="js/cordova.js"></script>
+    
+
+  </head>
+  
+  <body>
+	  
+	<script type="text/javascript">
+		var logged_user = localStorage.getItem('logged_user') || '<empty>';
+		if(logged_user == '<empty>'){
+			window.location = 'index.html';
+		}
+			
+		function logout()
+		{
+			localStorage.setItem('logged_user', '<empty>');
+			window.location = 'index.html';
+		}
+	</script>
+	  
+  <header class="bar-title">
+	  <a class="button" href="index.html">
+		Back
+	  </a>
+    <h1 class="title">PickEvent - Review App</h1>
+  </header>
+  
+  <div class="content">
+	  <div class="content-padded">
+		<p class="welcome"><h2>Log Out</h2></p>
+	  </div>
+	  
+	  <div id="form_1" class="content-padded">
+		  
+		  <div style="padding:10px;margin:10px;">
+			  <br/>Really do you want log out?
+			  <br/><br/>
+			  <a class="button button-block" href="javascript:logout();">Yes, right now</a>
+			  <br/><br/>
+			  <a class="button button-block" href="home.html">Not yet</a>
+			</div>
+		</div>
+  </div>
+
+  </body>
+</html>
